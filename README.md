@@ -1,14 +1,23 @@
-[![Open in Codespaces](https://classroom.github.com/assets/launch-codespace-2972f46106e565e64193e422d61a12cf1da4916b45550586e14ef0a7c637dd04.svg)](https://classroom.github.com/open-in-codespaces?assignment_repo_id=21736523)
-# Your project name ✨
+# Tablister 🎸🎶
 A short description of your project. Aim for 2-3 lines. \
 
-Website url: [website.be](website.be) (optional)
+Website url: [website.be](website.be)
 
 If you want to add more sections, please do so after the existing ones (avoid burying your sources under a lot of text!).
 
-## Up & running (optional) 🏃‍➡️
-This should contain step by step instructions to run your project (delete this section if it's not relevant). \
-Also include login credentials or other vital information if needed.
+## Installation and usage
+Start up a containerized database:
+```zsh
+docker compose up -d
+```
+Install dependencies:
+```zsh
+npm i
+```
+Run the backend:
+```zsh
+npm run dev
+```
 
 ## Sources 🗃️
 List **ALL your used sources** here:
