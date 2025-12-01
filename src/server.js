@@ -1,6 +1,7 @@
-import cors from 'cors'
-import express from 'express'
-import morgan from 'morgan';
+import cors from "cors";
+import express from "express";
+import morgan from "morgan";
+import userRouter from "./routes/userRouter.js";
 
 const app = express();
 
@@ -17,5 +18,7 @@ app.use(cors(corsOptions));
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok", message: "Server running healthy!" });
 });
+
+app.use("/users", userRouter);
 
 export default app;
