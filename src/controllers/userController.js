@@ -1,6 +1,10 @@
 import { ObjectId } from "mongodb";
 import { getCollection } from "../db.js";
-import { hashPassword, comparePassword, generateToken } from "../utils/auth.js";
+import {
+  hashPassword,
+  comparePassword,
+  generateToken,
+} from "../utils/bcryptAuth.js";
 
 export const signup = async (req, res) => {
   const { username, email, password } = req.body;

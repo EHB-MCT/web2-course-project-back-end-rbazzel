@@ -6,7 +6,7 @@ import {
   updateUser,
   deleteUser,
 } from "../controllers/userController.js";
-import { authMiddleware } from "../middleware/auth.js";
+import { authMiddleware } from "../middleware/bearerAuth.js";
 import { validateBody } from "../middleware/validateBody.js";
 import { loginSchema, signupSchema } from "../validation/userValidation.js";
 

@@ -1,4 +1,4 @@
-import { verifyToken } from "../utils/auth.js";
+import { verifyToken } from "../utils/bcryptAuth.js";
 
 export const authMiddleware = (req, res, next) => {
   const authHeader = req.headers.authorization;
