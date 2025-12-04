@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { getCollection, disconnectDB, client } from "../src/db.js";
-import { hashPassword, generateToken } from "../src/utils/auth.js";
+import { hashPassword, generateToken } from "../src/utils/bcryptAuth.js";
 
 const seedUsers = [
   { username: "alice", email: "alice@example.com", password: "password123" },

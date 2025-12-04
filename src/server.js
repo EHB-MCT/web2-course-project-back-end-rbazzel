@@ -3,7 +3,6 @@ import express from "express";
 import morgan from "morgan";
 import userRouter from "./routes/userRouter.js";
 import spotifyRouter from "./routes/spotifyRouter.js";
-import cookieParser from "cookie-parser";
 import session from "express-session";
 
 const app = express();
@@ -17,7 +16,6 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors(corsOptions));
-app.use(cookieParser());
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
