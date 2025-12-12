@@ -8,5 +8,6 @@ router.get("/connect", spotifyController.connect);
 router.get("/callback", spotifyController.callback);
 // router.get("/playlists", authMiddleware, spotifyController.getPlaylists);
 router.post("/refresh", authMiddleware, spotifyController.refreshToken);
+router.get("/profile", authMiddleware, spotifyController.getProfile);
 
 export default router;

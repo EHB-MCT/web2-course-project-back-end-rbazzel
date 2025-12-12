@@ -155,4 +155,56 @@ export const refreshToken = async (req, res) => {
   }
 };
 
-export default { connect, callback, refreshToken };
+export const getProfile = async (req, res) => {
+  if (!req.session || !req.session.spotifyUserId) {
+    return res.status(401).json({ error: "Unauthorized: No active session." });
+  }
+
+  try {
+    const users = await getCollection("users");
+
+    const user = await users.findOne({ spotifyId: req.session.spotifyUserId });
+
+    if (!user) {
+      req.session.destroy();
+      return res.status(401).json({ error: "User not found." });
+    }
+
+    const spotifyResponse = await axios.get("https://api.spotify.com/v1/me", {
+      headers: {
+        Authorization: `Bearer ${user.spotifyAccessToken}`,
+      },
+    });
+
+    const spotifyData = spotifyResponse.data;
+
+    const profileData = {
+      displayName: spotifyData.display_name,
+      id: spotifyData.id,
+      email: spotifyData.email,
+      product: spotifyData.product,
+      country: spotifyData.country,
+      imageUrl:
+        spotifyData.images && spotifyData.images.length > 0
+          ? spotifyData.images[0].url
+          : null,
+    };
+
+    res.json(profileData);
+  } catch (error) {
+    console.error(
+      "Profile Fetch Error:",
+      error.response?.data || error.message
+    );
+
+    if (error.response?.status === 401) {
+      return res
+        .status(401)
+        .json({ error: "Spotify token expired. Please login again." });
+    }
+
+    res.status(500).json({ error: "Failed to fetch profile data." });
+  }
+};
+
+export default { connect, callback, refreshToken, getProfile };
