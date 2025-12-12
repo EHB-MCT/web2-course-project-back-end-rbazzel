@@ -1,18 +1,29 @@
 import axios from "axios";
+import crypto from "crypto";
 import { getCollection } from "../db.js";
 
 const SPOTIFY_TOKEN_URL = "https://accounts.spotify.com/api/token";
 const SPOTIFY_AUTH_URL = "https://accounts.spotify.com/authorize";
+const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
 
 export const connect = (req, res) => {
   const scope =
     "playlist-read-private playlist-read-collaborative user-read-private user-read-email";
+  const state = crypto.randomBytes(16).toString("hex");
+
+  res.cookie("spotify_auth_state", state, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    maxAge: 5 * 60 * 1000,
+  });
 
   const params = new URLSearchParams({
     response_type: "code",
     client_id: process.env.SPOTIFY_CLIENT_ID,
     scope,
     redirect_uri: process.env.SPOTIFY_REDIRECT_URI,
+    state: state,
   });
 
   res.redirect(`${SPOTIFY_AUTH_URL}?${params.toString()}`);
@@ -20,13 +31,25 @@ export const connect = (req, res) => {
 
 export const callback = async (req, res) => {
   const code = req.query.code || null;
+  const state = req.query.state || null;
+  const storedState = req.cookies ? req.cookies["spotify_auth_state"] : null;
+
+  if (state === null || state !== storedState) {
+    res.clearCookie("spotify_auth_state");
+    return res.redirect(
+      FRONTEND_URL +
+        "/#" +
+        new URLSearchParams({ error: "state_mismatch" }).toString()
+    );
+  }
+
+  res.clearCookie("spotify_auth_state");
 
   if (!code) {
     return res.redirect(
-      "http://localhost:5173/#" +
-        new URLSearchParams({
-          error: "missing_code",
-        }).toString()
+      FRONTEND_URL +
+        "/#" +
+        new URLSearchParams({ error: "missing_code" }).toString()
     );
   }
 
@@ -59,9 +82,7 @@ export const callback = async (req, res) => {
     });
 
     const profile = profileResponse.data;
-
     const users = await getCollection("users");
-
     const spotifyId = profile.id;
 
     req.session.spotifyUserId = spotifyId;
@@ -79,14 +100,13 @@ export const callback = async (req, res) => {
       { upsert: true }
     );
 
-    res.redirect("http://localhost:5173/dashboard");
+    res.redirect(`${FRONTEND_URL}/dashboard`);
   } catch (err) {
     console.error(err.response?.data || err);
     res.redirect(
-      "http://localhost:5173/#" +
-        new URLSearchParams({
-          error: "spotify_auth_failed",
-        }).toString()
+      FRONTEND_URL +
+        "/#" +
+        new URLSearchParams({ error: "spotify_auth_failed" }).toString()
     );
   }
 };
