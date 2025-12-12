@@ -13,7 +13,7 @@ app.set("trust proxy", 1);
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser);
+app.use(cookieParser());
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
@@ -43,19 +43,6 @@ app.use(
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  })
-);
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-      httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 24 * 7,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-    },
   })
 );
 
