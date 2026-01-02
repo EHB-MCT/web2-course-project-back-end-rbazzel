@@ -16,7 +16,12 @@ export const signup = async (req, res) => {
       return res.status(409).json({ message: "User already exists" });
 
     const passwordHash = await hashPassword(password);
-    const result = await users.insertOne({ username, email, passwordHash });
+    const result = await users.insertOne({
+      username,
+      email,
+      passwordHash,
+      createdAt: new Date(),
+    });
     const user = await users.findOne({ _id: result.insertedId });
 
     const token = generateToken(user);
