@@ -1,6 +1,6 @@
 # Tablister 🎸🎶
 
-An [ExpressJS](https://expressjs.com/) API to manage users, playlists and songs with links to [Ultimate Guitar](www.ultimate-guitar.com/) tabs.
+An [ExpressJS](https://expressjs.com/) API to manage users, playlists and songs with links to [Ultimate Guitar](www.ultimate-guitar.com/) tabs. Hosted on [Render](https://web2-course-project-back-end-rbazzel.onrender.com/)
 
 ## Installation and usage
 
