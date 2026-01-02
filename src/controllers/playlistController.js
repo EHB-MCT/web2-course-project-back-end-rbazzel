@@ -12,6 +12,7 @@ export const createPlaylist = async (req, res) => {
       title,
       description,
       userId: new ObjectId(userId),
+      songs: [],
       createdAt,
     });
 
@@ -21,6 +22,7 @@ export const createPlaylist = async (req, res) => {
         title,
         description,
         userId,
+        songs: [],
         createdAt,
       },
     });
@@ -52,6 +54,7 @@ export const getPlaylistById = async (req, res) => {
       title: playlist.title,
       description: playlist.description,
       userId: playlist.userId,
+      songs: playlist.songs || [],
       createdAt: playlist.createdAt,
     });
   } catch (err) {
@@ -73,6 +76,7 @@ export const getPlaylistsByUser = async (req, res) => {
       title: p.title,
       description: p.description,
       userId: p.userId,
+      songs: p.songs || [],
       createdAt: p.createdAt,
     }));
 
@@ -114,6 +118,7 @@ export const updatePlaylist = async (req, res) => {
       title: updated.title,
       description: updated.description,
       userId: updated.userId,
+      songs: updated.songs || [],
       createdAt: updated.createdAt,
     });
   } catch (err) {

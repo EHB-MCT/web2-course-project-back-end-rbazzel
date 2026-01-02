@@ -9,6 +9,7 @@ import {
   updatePlaylist,
   deletePlaylist,
 } from "../controllers/playlistController.js";
+import songRouter from "./songRouter.js";
 
 const router = express.Router();
 
@@ -22,5 +23,7 @@ router.put(
   updatePlaylist
 );
 router.delete("/:id", authMiddleware, deletePlaylist);
+
+router.use("/:playlistId/songs", songRouter);
 
 export default router;
