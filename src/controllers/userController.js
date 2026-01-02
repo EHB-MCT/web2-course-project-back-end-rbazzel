@@ -48,14 +48,23 @@ export const login = async (req, res) => {
 
 export const getUser = async (req, res) => {
   const { id } = req.params;
+
+  if (req.user.id !== id) {
+    return res.status(403).json({ message: "Forbidden: Access denied" });
+  }
+
   try {
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid user ID format" });
+    }
+
     const users = await getCollection("users");
     const user = await users.findOne(
       { _id: new ObjectId(id) },
       { projection: { passwordHash: 0 } }
     );
     if (!user) return res.status(404).json({ message: "User not found" });
-    res.json(user);
+    res.json({ id: user._id, username: user.username, email: user.email });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
@@ -66,12 +75,20 @@ export const updateUser = async (req, res) => {
   const { id } = req.params;
   const updates = { ...req.body };
 
+  if (req.user.id !== id) {
+    return res.status(403).json({ message: "Forbidden: Access denied" });
+  }
+
   if (updates.password) {
     updates.passwordHash = await hashPassword(updates.password);
     delete updates.password;
   }
 
   try {
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid user ID format" });
+    }
+
     const users = await getCollection("users");
     const result = await users.findOneAndUpdate(
       { _id: new ObjectId(id) },
@@ -89,7 +106,16 @@ export const updateUser = async (req, res) => {
 
 export const deleteUser = async (req, res) => {
   const { id } = req.params;
+
+  if (req.user.id !== id) {
+    return res.status(403).json({ message: "Forbidden: Access denied" });
+  }
+
   try {
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid user ID format" });
+    }
+
     const users = await getCollection("users");
     const result = await users.deleteOne({ _id: new ObjectId(id) });
     if (result.deletedCount === 0)
