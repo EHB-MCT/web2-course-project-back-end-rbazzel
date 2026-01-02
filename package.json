@@ -12,7 +12,8 @@
   "main": "./src/index.js",
   "scripts": {
     "dev": "node --watch ./src/index.js",
-    "seed": "node ./scripts/seed.js"
+    "seed": "node ./scripts/seed.js",
+    "start": "node ./src/index.js"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
