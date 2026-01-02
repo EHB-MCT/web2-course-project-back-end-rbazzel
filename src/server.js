@@ -20,5 +20,6 @@ app.get("/health", (req, res) => {
 });
 
 app.use("/users", userRouter);
+app.use("/playlists", playlistRouter);
 
 export default app;
