@@ -1,4 +1,5 @@
 import "dotenv/config";
+import { ObjectId } from "mongodb";
 import { getCollection, disconnectDB, client } from "../src/db.js";
 import { hashPassword, generateToken } from "../src/utils/bcryptAuth.js";
 
@@ -15,6 +16,26 @@ const seedPlaylists = [
   },
   { title: "Coding Focus", description: "Lo-fi beats to study/code to." },
   { title: "Workout Mix", description: "High energy tracks for the gym." },
+];
+
+const seedSongs = [
+  {
+    title: "Stairway to Heaven",
+    artist: "Led Zeppelin",
+    tab_url:
+      "https://tabs.ultimate-guitar.com/tab/led-zeppelin/stairway-to-heaven-tabs-9488",
+  },
+  {
+    title: "Wonderwall",
+    artist: "Oasis",
+    tab_url: "https://tabs.ultimate-guitar.com/tab/oasis/wonderwall-tabs-27596",
+  },
+  {
+    title: "Wish You Were Here",
+    artist: "Pink Floyd",
+    tab_url:
+      "https://tabs.ultimate-guitar.com/tab/pink-floyd/wish-you-were-here-tabs-98406",
+  },
 ];
 
 const seed = async () => {
@@ -50,12 +71,22 @@ const seed = async () => {
     for (let i = 0; i < seedPlaylists.length; i++) {
       const playlist = seedPlaylists[i];
       const userId = userIds[i % userIds.length];
+
+      const songs = seedSongs.map((s) => ({
+        id: new ObjectId(),
+        ...s,
+        createdAt: new Date(),
+      }));
+
       await playlistsCollection.insertOne({
         ...playlist,
         userId,
+        songs,
         createdAt: new Date(),
       });
-      console.log(`Inserted playlist: ${playlist.title}`);
+      console.log(
+        `Inserted playlist: ${playlist.title} with ${songs.length} songs`
+      );
     }
 
     console.log("Seeding complete!");

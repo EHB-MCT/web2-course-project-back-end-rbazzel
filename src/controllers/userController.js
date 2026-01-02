@@ -100,9 +100,19 @@ export const updateUser = async (req, res) => {
       { $set: updates },
       { returnDocument: "after", projection: { passwordHash: 0 } }
     );
-    if (!result.value)
-      return res.status(404).json({ message: "User not found" });
-    res.json(result.value);
+
+    const updated = result.value !== undefined ? result.value : result;
+    if (!updated) return res.status(404).json({ message: "User not found" });
+
+    const token = generateToken(updated);
+    res.json({
+      user: {
+        id: updated._id,
+        username: updated.username,
+        email: updated.email,
+      },
+      token,
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
